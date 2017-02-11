@@ -1,40 +1,99 @@
 package imdb;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
-import info.movito.themoviedbapi.model.MovieDb;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
+import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 public class main {
-	
-	// API
-	static TmdbApi api = new TmdbApi("dbae952f0b2a4b3711bf5808e97c4769");
-	
-	public static void main(String[] args){
+	static TmdbApi api = new TmdbApi("dbae952f0b2a4b3711bf5808e97c4769"); // API
 
-		log("List of commands: ");
-		//sTmdbApi movies = new TmdbApi("dbae952f0b2a4b3711bf5808e97c4769");
-		TmdbMovies movies = api.getMovies();
-		MovieDb movie = movies.getMovie(5353, "en");
-		
-		for(int i = 0; i<20; i++){
-			log(movies.getPopularMovies("en", 0).getResults().get(i).getOriginalTitle());
-			
+	public static void main(String[] args) {
+		listOfCommands();
+
+		while (true) {
+			System.out.print("\nEnter a command: ");
+			String input = input().toLowerCase();
+
+			if (input.equals("h")) {
+				listOfCommands();
+			} else if (input.equals("top")) {
+				TmdbMovies movies = api.getMovies();
+				for (int i = 0; i < movies.getPopularMovies("en", 0).getResults().size(); i++) {
+					log((i + 1) + ") " + movies.getPopularMovies("en", 0).getResults().get(i).getTitle());
+				}
+			} else if (input.equals("now")) {
+				TmdbMovies movies = api.getMovies();
+
+				for (int i = 0; i < movies.getNowPlayingMovies("en", 0).getResults().size(); i++) {
+					log((i + 1) + ") " + movies.getNowPlayingMovies("en", 0).getResults().get(i).getTitle());
+				}
+			} else if (input.equals("upcoming")) {
+				TmdbMovies movies = api.getMovies();
+
+				for (int i = 0; i < movies.getUpcoming("en", 0).getResults().size(); i++) {
+					log((i + 1) + ") " + movies.getUpcoming("en", 0).getResults().get(i).getTitle());
+				}
+			} else if (input.equals("quit")) {
+				log("Good bye!");
+				break;
+			} else {
+				int[] list = new int[6];
+
+				MovieResultsPage movies = api.getSearch().searchMovie(input, 0, "en", false, 0);
+
+				if (movies.getResults().size() == 0) {
+					log("Title not found, try again.");
+				} else {
+					for (int i = 0; i < (movies.getResults().size() > 5 ? 5 : movies.getResults().size()); i++) {
+						log((i + 1) + ") " + movies.getResults().get(i).getTitle() + " ("
+								+ movies.getResults().get(i).getReleaseDate().split("-")[0] + ")");
+						list[i + 1] = movies.getResults().get(i).getId();
+					}
+					while (true) {
+						System.out.print("Type the number and one of the following: Cast, Rating, Tags, Revenue (eg: '1 cast') ");
+						String input2 = input().toLowerCase();
+
+						String[] inputSplit = input2.split(" ");
+						int inputID = Integer.parseInt(inputSplit[0]);
+						String inputCommand = inputSplit[1];
+
+						if (inputID < 1 || inputID > 5) {
+							log("Invalid movie ID!");
+						} else if (inputCommand.contains("cast")) {
+							for(int i = 0; i < (api.getMovies().getCredits(list[inputID]).getCast().size() > 5 ? 5 : api.getMovies().getCredits(list[inputID]).getCast().size()); i++){
+								log((i + 1) + ") " +api.getMovies().getCredits(list[inputID]).getCast().get(i).getName() + " who plays " + (api.getMovies().getCredits(list[inputID]).getCast().get(i).getCharacter() != "" ? api.getMovies().getCredits(list[inputID]).getCast().get(i).getCharacter() : "unknown"));
+							}
+						} else if (inputCommand.equals("quit")) {
+							break;
+						}
+					}
+				}
+			}
 		}
-
-//		static MovieDb movie = movies.getMovie(5353, "en");
-		//log("" + movies.getPopularMovies("en", 0).getResults().size());
 	}
-	
-	public void ListOfCommands(){
+
+	public static String input() {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			return br.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static void listOfCommands() {
 		log("List of commands");
 		log("'H' = Help");
-		log("'Top 20 Movies' = Displays current top 20 Movies");
-		log("'Now Playing' = List of movies currently playing");
+		log("'Top' = Displays current top 20 Movies");
+		log("'Now' = List of movies currently playing");
+		log("'Upcoming' = List of movies upcoming");
+		log("'Quit' = To quit");
+		log("Or enter title of movie to search");
 	}
 
 	public static void log(String s) {
