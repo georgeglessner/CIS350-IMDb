@@ -15,7 +15,7 @@ public class main {
 		listOfCommands();
 
 		while (true) {
-			System.out.print("\nEnter a command: ");
+			System.out.print("\nEnter a command (H or help): ");
 			String input = input().toLowerCase();
 
 			if (input.equals("h")) {
