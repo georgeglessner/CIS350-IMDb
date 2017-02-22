@@ -12,10 +12,12 @@ public class main {
 	static TmdbApi api = new TmdbApi("dbae952f0b2a4b3711bf5808e97c4769"); // API
 
 	public static void main(String[] args) {
+		
+		log("Temp");
 		listOfCommands();
 
 		while (true) {
-			System.out.print("\nEnter a command (H or help): ");
+			log("\nEnter a command (H for help):  ");
 			String input = input().toLowerCase();
 
 			if (input.equals("h")) {
@@ -54,12 +56,14 @@ public class main {
 						list[i + 1] = movies.getResults().get(i).getId();
 					}
 					while (true) {
-						System.out.print("Type the number and one of the following: Cast, Rating, Tags, Revenue (eg: '1 cast') ");
+						System.out.print("Type the number and one of the following: Cast, Rating, Similar, Revenue (eg: '1 cast') ");
 						String input2 = input().toLowerCase();
 
 						String[] inputSplit = input2.split(" ");
 						int inputID = Integer.parseInt(inputSplit[0]);
 						String inputCommand = inputSplit[1];
+						
+						String movieName = api.getMovies().getMovie(list[inputID], "en").getTitle();
 
 						if (inputID < 1 || inputID > 5) {
 							log("Invalid movie ID!");
@@ -67,7 +71,18 @@ public class main {
 							for(int i = 0; i < (api.getMovies().getCredits(list[inputID]).getCast().size() > 5 ? 5 : api.getMovies().getCredits(list[inputID]).getCast().size()); i++){
 								log((i + 1) + ") " +api.getMovies().getCredits(list[inputID]).getCast().get(i).getName() + " who plays " + (api.getMovies().getCredits(list[inputID]).getCast().get(i).getCharacter() != "" ? api.getMovies().getCredits(list[inputID]).getCast().get(i).getCharacter() : "unknown"));
 							}
+						} else if (inputCommand.contains("rating")) {
+							log("Users give '" + movieName +"' an average of " + api.getMovies().getMovie(list[inputID], "en").getVoteAverage() + " out of 10!");
+						} else if (inputCommand.contains("similar")) {
+							log("Some movies similar to '" + movieName + "' are: ");
+
+							for(int i = 0; i < (api.getMovies().getSimilarMovies(list[inputID], "en", 0).getResults().size()  > 5 ? 5 : api.getMovies().getSimilarMovies(list[inputID], "en", 0).getResults().size()); i++){
+								log((i + 1) + ") " +api.getMovies().getSimilarMovies(list[inputID], "en", 0).getResults().get(i).getTitle());
+							}
+						} else if (inputCommand.contains("revenue")) {
+							log(movieName + " earned " + api.getMovies().getMovie(list[inputID], "en").getRevenue() + " in the box office!");
 						} else if (inputCommand.equals("quit")) {
+							log("Good bye!");
 							break;
 						}
 					}
