@@ -79,7 +79,7 @@ public class databaseInit {
 	// Search loop.
 	private static void searchMovies(String input) {
 		int[] list = new int[6];
-
+		
 		List<MovieDb> movies = api.getSearch().searchMovie(input, 0, "en", false, 0).getResults();
 
 		if (movies.size() == 0) {
