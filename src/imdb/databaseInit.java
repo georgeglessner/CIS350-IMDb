@@ -10,15 +10,23 @@ import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.people.PersonCast;
 
-public class databaseInit {
+/**********************************************************************
+ * Program that allows user to find information about top 20 movies,
+ * upcoming movies, movies currently out, and the ability 
+ * to search for any movie.
+ * 
+ *@author George Glessner, Gabe Vansolkema, Trace Remick
+ *@version 2/29/17
+ **********************************************************************/
+public class DatabaseInit {
 	
-	// API
+	/** API. */
 	static TmdbApi api = new TmdbApi("dbae952f0b2a4b3711bf5808e97c4769");
 	
-	// Movies
+	/** Movies. */
 	static TmdbMovies movies = api.getMovies();
 
-	// Main loop
+	/** Main Loop. */
 	public static void main(String[] args) {
 		listMainCommands();
 
@@ -88,7 +96,8 @@ public class databaseInit {
 			list = listCurrentSearch(movies, list);
 			
 			while (true) {
-				log("\nType the movie number and one of the following: Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
+				log("\nType the movie number and one of the following:"); 
+				log("Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
 				log("Type 'h' to relist movies in current search.");
 				int inputID = 0;
 				String input2; 
@@ -97,9 +106,10 @@ public class databaseInit {
 				// Error Handling. 
 				// Checks to make sure input is valid.
 				// Gives user feedback if necessary.
-				// Quits search if command 'quit' is typed. Back to main loop.
+				// Quits search if command 'quit' is typed. 
+				//Back to main loop.
 				// Lists current search if 'h' is typed. 
-				while (inputID < 1 || inputID > 5 ) {
+				while (inputID < 1 || inputID > 5) {
 					input2 = input().toLowerCase();
 					inputSplit = input2.split(" ");
 					try {
@@ -181,32 +191,37 @@ public class databaseInit {
 	}
 	
 
-	// Gets rating for specified movie.
+	/** Gets rating for specified movie. */
 	private static void getRating(MovieDb movie, String movieName) {
 		log("Users give '" + movieName +"' an average of " + movie.getVoteAverage() + " out of 10!");
 		
 	}
 
 	
-	// Gets similar movies for specified movie.
+	/** Gets similar movies for specified movie. */
 	private static void getSimilar(MovieDb movie, String movieName, int[] list, int inputID) {
 		log("Some movies similar to '" + movieName + "' are: ");
 		List<MovieDb> similarMovies = api.getMovies().getSimilarMovies(list[inputID], "en", 0).getResults();
 		
-		for(int i = 0; i < (similarMovies.size()  > 5 ? 5 : similarMovies.size()); i++){
+		for (int i = 0; i < (similarMovies.size()  > 5 ? 5 : similarMovies.size()); i++) {
 			log((i + 1) + ") " + similarMovies.get(i).getTitle());
 		}
 	}
 
 	
-	// Gets revenue for specified movie.
+	/** Gets revenue for specified movie. 
+	 * @param movie
+	 * @param movieName*/
+	
 	private static void getRevenue(MovieDb movie, String movieName) {
 		log(movieName + " earned " + movie.getRevenue() + " in the box office!");
 		
 	}
 
 	
-	// Gets genres for specified movie.
+	/** Gets genres for specified movie. 
+	 * @param movie
+	 * @param movieName*/
 	private static void getGenres(MovieDb movie, String movieName) {
 		log("Genres for " + movieName + ":");
 		
@@ -216,7 +231,8 @@ public class databaseInit {
 	}
 
 	
-	// Input.
+	/** Input. 
+	 * @return br*/
 	public static String input() {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
@@ -228,7 +244,7 @@ public class databaseInit {
 	}
 
 	
-	// Main command list. 
+	/** Main command list. */
 	public static void listMainCommands() {
 		log("List of commands");
 		log("'H' = Help");
@@ -240,7 +256,7 @@ public class databaseInit {
 	}
 	
 	
-	/* Deprecated */ 
+	/** Deprecated. */ 
 	public static void listSearchCommands() {
 		log("Type the number and one of the following:");
 		log("'C' = Cast");
@@ -253,7 +269,8 @@ public class databaseInit {
 	}
 
 	
-	// Log.
+	/** Log.
+	 * @param s*/
 	public static void log(String s) {
 		System.out.println(s);
 	}
