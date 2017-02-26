@@ -101,14 +101,9 @@ public class DatabaseInit {
 			list = listCurrentSearch(movies, list);
 			
 			while (true) {
-<<<<<<< HEAD
-				log("\nType the movie number and one of the following: Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
-				log("Type 'h' to relist movies in current search. Type 'quit' to quit the search.");
-=======
 				log("\nType the movie number and one of the following:"); 
 				log("Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
 				log("Type 'h' to relist movies in current search.");
->>>>>>> 6fa1d7dd8e4e3e18240abff8ddcc8e2280b00648
 				int inputID = 0;
 				String input2; 
 				String[] inputSplit = new String[2];
