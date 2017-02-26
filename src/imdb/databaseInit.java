@@ -196,9 +196,9 @@ public class DatabaseInit {
 		List<PersonCast> cast = api.getMovies().getCredits(list[inputID]).getCast();
 		
 		for (int i = 0; i < (cast.size() > 5 ? 5 : cast.size()); i++) {
-			log((i + 1) + ") " + cast.get(i).getName() + " who plays " + 
-		(cast.get(i).getCharacter() != "" ? cast.get(i).getCharacter() : 
-			"unknown"));
+			log((i + 1) + ") " + cast.get(i).getName() + " who plays "  
+		+ (cast.get(i).getCharacter() != "" ? cast.get(i).getCharacter() 
+			: "unknown"));
 		}
 	}
 	
@@ -207,8 +207,8 @@ public class DatabaseInit {
 	 * @param movie movie
 	 * @param movieName movie name*/
 	private static void getRating(MovieDb movie, String movieName) {
-		log("Users give '" + movieName +"' an average of " + 
-				movie.getVoteAverage() + " out of 10!");
+		log("Users give '" + movieName + "' an average of " 
+				+ movie.getVoteAverage() + " out of 10!");
 		
 	}
 
