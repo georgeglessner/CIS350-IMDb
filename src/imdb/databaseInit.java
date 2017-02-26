@@ -26,7 +26,8 @@ public class DatabaseInit {
 	/** Movies. */
 	static TmdbMovies movies = api.getMovies();
 
-	/** Main Loop. */
+	/** Main Loop. 
+	 * @param args arguments*/
 	public static void main(String[] args) {
 		listMainCommands();
 
@@ -59,7 +60,8 @@ public class DatabaseInit {
 	}
 
 	
-	// Lists top movies.
+	/** Lists top movies.
+	 * @param movies movies */
 	private static void topMovies(TmdbMovies movies) {
 		for (int i = 0; i < movies.getPopularMovies("en", 0).getResults().size(); i++) {
 			log((i + 1) + ") " + movies.getPopularMovies("en", 0).getResults().get(i).getTitle());
@@ -67,7 +69,8 @@ public class DatabaseInit {
 	}
 	
 	
-	// Lists now movies.
+	/** Lists now movies. 
+	 * @param movies movies*/
 	private static void nowMovies(TmdbMovies movies) {
 		for (int i = 0; i < movies.getNowPlayingMovies("en", 0).getResults().size(); i++) {
 			log((i + 1) + ") " + movies.getNowPlayingMovies("en", 0).getResults().get(i).getTitle());
@@ -76,7 +79,8 @@ public class DatabaseInit {
 	}
 	
 	
-	// Lists up and coming movies.
+	/** Lists up and coming movies. 
+	 * @param movies movies*/
 	private static void upcomingMovies(TmdbMovies movies) {
 		for (int i = 0; i < movies.getUpcoming("en", 0).getResults().size(); i++) {
 			log((i + 1) + ") " + movies.getUpcoming("en", 0).getResults().get(i).getTitle());
@@ -84,7 +88,8 @@ public class DatabaseInit {
 	}
 
 	
-	// Search loop.
+	/** Search loop. 
+	 * @param input input*/
 	private static void searchMovies(String input) {
 		int[] list = new int[6];
 		
@@ -170,35 +175,49 @@ public class DatabaseInit {
 	}
 	
 	
-	// Lists current search.
+	/** Lists current search. 
+	 * @param movies movies
+	 * @param list list
+	 * @return list list*/
 	private static int[] listCurrentSearch(List<MovieDb> movies, int[] list) {
 		for (int i = 0; i < (movies.size() > 5 ? 5 : movies.size()); i++) {
-			log((i+1) + ") " + movies.get(i).getTitle() + " ("
+			log((i + 1) + ") " + movies.get(i).getTitle() + " ("
 					+ movies.get(i).getReleaseDate().split("-")[0] + ")");
-			list[i+1] = movies.get(i).getId();
+			list[i + 1] = movies.get(i).getId();
 		}
 		return list;
 	}
 	
 
-	// Gets cast for specified movie (uses list and inputID to do this).
+	/** Gets cast for specified movie (uses list and inputID to do this). 
+	 * @param list list
+	 * @param inputID ID*/
 	private static void getCast(int[] list, int inputID) {
 		List<PersonCast> cast = api.getMovies().getCredits(list[inputID]).getCast();
 		
 		for (int i = 0; i < (cast.size() > 5 ? 5 : cast.size()); i++) {
-			log((i+1) + ") " + cast.get(i).getName() + " who plays " + (cast.get(i).getCharacter() != "" ? cast.get(i).getCharacter() : "unknown"));
+			log((i + 1) + ") " + cast.get(i).getName() + " who plays " + 
+		(cast.get(i).getCharacter() != "" ? cast.get(i).getCharacter() : 
+			"unknown"));
 		}
 	}
 	
 
-	/** Gets rating for specified movie. */
+	/** Gets rating for specified movie. 
+	 * @param movie movie
+	 * @param movieName movie name*/
 	private static void getRating(MovieDb movie, String movieName) {
-		log("Users give '" + movieName +"' an average of " + movie.getVoteAverage() + " out of 10!");
+		log("Users give '" + movieName +"' an average of " + 
+				movie.getVoteAverage() + " out of 10!");
 		
 	}
 
 	
-	/** Gets similar movies for specified movie. */
+	/** Gets similar movies for specified movie. 
+	 * @param movie movie
+	 * @param movieName movie name
+	 * @param list list of movies
+	 * @param inputID movie id*/
 	private static void getSimilar(MovieDb movie, String movieName, int[] list, int inputID) {
 		log("Some movies similar to '" + movieName + "' are: ");
 		List<MovieDb> similarMovies = api.getMovies().getSimilarMovies(list[inputID], "en", 0).getResults();
@@ -210,8 +229,8 @@ public class DatabaseInit {
 
 	
 	/** Gets revenue for specified movie. 
-	 * @param movie
-	 * @param movieName*/
+	 * @param movie movie
+	 * @param movieName movie name*/
 	
 	private static void getRevenue(MovieDb movie, String movieName) {
 		log(movieName + " earned " + movie.getRevenue() + " in the box office!");
@@ -220,19 +239,19 @@ public class DatabaseInit {
 
 	
 	/** Gets genres for specified movie. 
-	 * @param movie
-	 * @param movieName*/
+	 * @param movie movie 
+	 * @param movieName movie name*/
 	private static void getGenres(MovieDb movie, String movieName) {
 		log("Genres for " + movieName + ":");
 		
 		for (int i = 0; i < (movie.getGenres().size() > 3 ? 3 : movie.getGenres().size()); i++) {
-			log((i+1) + ") " + movie.getGenres().get(i).getName());
+			log((i + 1) + ") " + movie.getGenres().get(i).getName());
 		}
 	}
 
 	
 	/** Input. 
-	 * @return br*/
+	 * @return br input*/
 	public static String input() {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
@@ -270,7 +289,7 @@ public class DatabaseInit {
 
 	
 	/** Log.
-	 * @param s*/
+	 * @param s string*/
 	public static void log(String s) {
 		System.out.println(s);
 	}
