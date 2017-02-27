@@ -109,7 +109,7 @@ public class DatabaseInit {
 				String[] inputSplit = new String[2];
 				
 				// Error Handling. 
-				// Checks to make sure input is valid.
+				// Checks to make sure input[0] is valid.
 				// Gives user feedback if necessary.
 				// Quits search if command 'quit' is typed. 
 				//Back to main loop.
@@ -120,7 +120,10 @@ public class DatabaseInit {
 					try {
 						inputID = Integer.parseInt(inputSplit[0]);
 						if (inputID > 5) {
-							log("Movie number not recognized (try a number 1-5)");
+							log("Movie number not recognized (try a number 1-5).");
+						}
+						if (inputID < 0) {
+							log("Movie number not recognized (try a number 1-5).");
 						}
 					
 					} catch (Exception e) {
@@ -132,18 +135,22 @@ public class DatabaseInit {
 							log("\nType the movie number and one of the following: Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
 							log("Type 'h' to relist movies in current search.");
 						} else {
-							log("Movie number not recognized (try a number 1-5)");
+							log("Movie command not recognized, try a number (1-5) and then a command (cast).");
 						}
 					}
 				}
 				
 				// Condition can only be met if 'quit' is typed above. 
 				// Exits search. Goes back to main loop.
-				if (inputID == 0) {
+				if (inputID == 0 || inputSplit[0].contains("quit")) {
 					break;
 				}
 				
+				// Error handling.
+				// Checks to make sure input[1] is valid.
+				// Gives user feedback if necessary. 
 				// Stores input, movie, and movie name.
+
 				String inputCommand = inputSplit[1];
 				MovieDb movie = api.getMovies().getMovie(list[inputID], "en");
 				String movieName = api.getMovies().getMovie(list[inputID], "en").getTitle();
