@@ -36,29 +36,34 @@ public class DatabaseInit {
 		while (true) {
 			log("\nEnter a command (H for help):  ");
 			String input = input().toLowerCase();
+			runCommand(input);
 
-			if (input.equals("quit")) {
-				log("Good bye!");
-				break;
-			
-			} else if (input.equals("top")) {
-				topMovies(movies);
-			
-			} else if (input.equals("now")) {
-				nowMovies(movies);
-			
-			} else if (input.equals("upcoming")) {
-				upcomingMovies(movies);
-			
-			} else if (input.equals("h")) {
-				listMainCommands();
-			
-			} else {
-				searchMovies(input);
-			}
 		}
 	}
 
+	/** Main commands
+	 * @param input input*/
+	public static void runCommand(final String input){
+		if (input.equals("quit")) {
+			log("Good bye!");
+			System.exit(0);
+		
+		} else if (input.equals("top")) {
+			topMovies(movies);
+		
+		} else if (input.equals("now")) {
+			nowMovies(movies);
+		
+		} else if (input.equals("upcoming")) {
+			upcomingMovies(movies);
+		
+		} else if (input.equals("h")) {
+			listMainCommands();
+		
+		} else {
+			searchMovies(input);
+		}
+	}
 	
 	/** Lists top movies.
 	 * @param movies movies */
