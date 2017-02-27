@@ -36,43 +36,15 @@ public class DatabaseInit {
 		// Checks command and calls associated method to handle request.
 		// Search loop entered if a search is made. 
 		while (true) {
-<<<<<<< HEAD
-			log("\nEnter a command (H for help):  ");
-			String input = input().toLowerCase();
-			runCommand(input);
 
-=======
 			log("Enter a command (H for help):  ");
 			
 			try { 
 				input = input().toLowerCase();
+				runCommand(input);
 			} catch (Exception e) {
 				log("Error assigning input.");
 			}
-
-			if (input.equals("quit")) {
-				log("Good bye!");
-				break;
-			
-			} else if (input.equals("top")) {
-				topMovies(movies);
-			
-			} else if (input.equals("now")) {
-				nowMovies(movies);
-			
-			} else if (input.equals("upcoming")) {
-				upcomingMovies(movies);
-			
-			} else if (input.equals("h")) {
-				listMainCommands();
-			
-			} else if (input.equals("")) {
-				log("Empty input not valid.");
-				
-			} else {
-				searchMovies(input);
-			}
->>>>>>> 0032cda35d4d7a11b0161d692c227ef3fb0fe241
 		}
 	}
 
@@ -95,7 +67,10 @@ public class DatabaseInit {
 		} else if (input.equals("h")) {
 			listMainCommands();
 		
-		} else {
+		} else if (input.equals("")) {
+			log("Empty input not valid.");
+		}
+			else {
 			searchMovies(input);
 		}
 	}
