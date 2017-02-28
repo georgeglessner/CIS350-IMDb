@@ -120,57 +120,48 @@ public class DatabaseInit {
 				log("Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
 				log("Type 'h' to relist movies in current search.");
 				int inputID = 0;
-				String input2; 
+				String input2;
 				String[] inputSplit = new String[2];
 				
-				// Error Handling. 
-				// Checks to make sure input[0] is valid.
-				// Gives user feedback if necessary.
-				// Quits search if command 'quit' is typed. 
-				//Back to main loop.
-				// Lists current search if 'h' is typed. 
+				
 				while (inputID < 1 || inputID > 5) {
 					input2 = input().toLowerCase();
 					inputSplit = input2.split(" ");
-					try {
-						inputID = Integer.parseInt(inputSplit[0]);
-						if (inputID > 5) {
-							log("Movie number not recognized (try a number 1-5).");
-						}
-						if (inputID < 0) {
-							log("Movie number not recognized (try a number 1-5).");
-						}
+					inputID = getSearchInputID(inputSplit[0]);
 					
-					} catch (Exception e) {
-						if (inputSplit[0].contains("quit")) {
-							log("Exiting search... Goodbye!");
-							break;
-						} else if (inputSplit[0].equals("h")) {
-							listCurrentSearch(movies, list);
-							log("\nType the movie number and one of the following: Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
-							log("Type 'h' to relist movies in current search.");
-						} else {
-							log("Movie command not recognized, try a number (1-5) and then a command (cast).");
-						}
+					// Error Handling. 
+					// Checks to make sure inputSplit[0] is valid.
+					// Gives user feedback if necessary.
+					// Lists current search if 'h' is typed. 
+					if (inputID == -1) {
+						log("Exiting search... Goodbye!");
+					} else if (inputID == -2) {
+						listCurrentSearch(movies, list);
+						log("\nType the movie number and one of the following: Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
+						log("Type 'h' to relist movies in current search.");
+					} else if (inputID == -3) {
+						log("Movie command not recognized, try a number (1-5) and then a command (cast).");
+					} else if (inputID == -4) {
+						log("Movie number out of bounds (try a number 1-5).");
 					}
+					
+					if (inputSplit[0].contains("quit")) 
+						break;
 				}
 				
 				// Condition can only be met if 'quit' is typed above. 
 				// Exits search. Goes back to main loop.
-				if (inputID == 0 || inputSplit[0].contains("quit")) {
+				if (inputSplit[0].contains("quit")) {
 					break;
 				}
-				
-				// Error handling.
-				// Checks to make sure input[1] is valid.
-				// Gives user feedback if necessary. 
+				 
 				// Stores input, movie, and movie name.
-
 				String inputCommand = inputSplit[1];
 				MovieDb movie = api.getMovies().getMovie(list[inputID], "en");
 				String movieName = api.getMovies().getMovie(list[inputID], "en").getTitle();
 
 				// Checks command and calls associated method to handle request. 
+				//searchCommand(inputID, inputCommand, list);
 				if (inputID < 1 || inputID > 5) {
 					log("Invalid movie ID!");
 				
@@ -195,7 +186,35 @@ public class DatabaseInit {
 			}
 		}
 	}
+
 	
+	/** Gets search input ID. 
+	 * @param input input
+	 * @return inputID inputID*/
+	private static int getSearchInputID(final String input) {
+		int inputID;
+		try {
+			inputID = Integer.parseInt(input);
+			
+			if (inputID > 0 && inputID < 6) 
+				return inputID;
+			
+			if (inputID < 0 || inputID > 5) 
+				return -4;
+				
+		} catch (Exception e) {
+			if (input.contains("quit")) {
+				return -1;
+			} else if (input.equals("h")) {
+				return -2;
+			} else {
+				return -3;
+			}
+		}
+		
+		return 0;
+	}
+
 	
 	/** Lists current search. 
 	 * @param movies movies
