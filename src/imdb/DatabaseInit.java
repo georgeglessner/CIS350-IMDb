@@ -38,40 +38,53 @@ public class DatabaseInit {
 		while (true) {
 
 			log("Enter a command (H for help):  ");
+			int x = 1;
 			
 			try { 
 				input = input().toLowerCase();
-				runCommand(input);
+				x = runCommand(input);
 			} catch (Exception e) {
 				log("Error assigning input.");
 			}
+			
+			// Pulled these out so I could test runCommand.
+			if (x == 4)
+				searchMovies(input);
+			if (x == 0)
+				System.exit(0);
 		}
 	}
 
 	/** Main commands
-	 * @param input input*/
-	public static void runCommand(final String input){
+	 * @param input input
+	 * @return */
+	public static int runCommand(final String input){
 		if (input.equals("quit")) {
 			log("Good bye!");
-			System.exit(0);
+			return 0;
 		
 		} else if (input.equals("top")) {
 			topMovies(movies);
+			return 1;
 		
 		} else if (input.equals("now")) {
 			nowMovies(movies);
+			return 1;
 		
 		} else if (input.equals("upcoming")) {
 			upcomingMovies(movies);
+			return 1;
 		
 		} else if (input.equals("h")) {
 			listMainCommands();
+			return 2;
 		
 		} else if (input.equals("")) {
 			log("Empty input not valid.");
+			return 3;
 		}
 			else {
-			searchMovies(input);
+			return 4;
 		}
 	}
 	
@@ -81,6 +94,7 @@ public class DatabaseInit {
 		for (int i = 0; i < movies.getPopularMovies("en", 0).getResults().size(); i++) {
 			log((i + 1) + ") " + movies.getPopularMovies("en", 0).getResults().get(i).getTitle());
 		}
+		log("");
 	}
 	
 	
@@ -90,6 +104,7 @@ public class DatabaseInit {
 		for (int i = 0; i < movies.getNowPlayingMovies("en", 0).getResults().size(); i++) {
 			log((i + 1) + ") " + movies.getNowPlayingMovies("en", 0).getResults().get(i).getTitle());
 		}
+		log("");
 		
 	}
 	
@@ -100,12 +115,14 @@ public class DatabaseInit {
 		for (int i = 0; i < movies.getUpcoming("en", 0).getResults().size(); i++) {
 			log((i + 1) + ") " + movies.getUpcoming("en", 0).getResults().get(i).getTitle());
 		}
+		log("");
 	}
 
 	
 	/** Search loop. 
 	 * @param input input*/
 	private static void searchMovies(final String input) {
+		log("Searching for movies with: " + input);
 		int[] list = new int[6];
 		
 		List<MovieDb> movies = api.getSearch().searchMovie(input, 0, "en", false, 0).getResults();
@@ -116,44 +133,29 @@ public class DatabaseInit {
 			list = listCurrentSearch(movies, list);
 			
 			while (true) {
-				log("\nType the movie number and one of the following:"); 
+				log("\nType a movie number and one of the following:"); 
 				log("Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
-				log("Type 'h' to relist movies in current search.");
+				log("Type 'h' to relist movies in current search. Type 'quit' to quit search.");
 				int inputID = 0;
 				String input2;
 				String[] inputSplit = new String[2];
-				
 				
 				while (inputID < 1 || inputID > 5) {
 					input2 = input().toLowerCase();
 					inputSplit = input2.split(" ");
 					inputID = getSearchInputID(inputSplit[0]);
 					
-					// Error Handling. 
-					// Checks to make sure inputSplit[0] is valid.
-					// Gives user feedback if necessary.
-					// Lists current search if 'h' is typed. 
-					if (inputID == -1) {
-						log("Exiting search... Goodbye!");
-					} else if (inputID == -2) {
-						listCurrentSearch(movies, list);
-						log("\nType the movie number and one of the following: Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
-						log("Type 'h' to relist movies in current search.");
-					} else if (inputID == -3) {
-						log("Movie command not recognized, try a number (1-5) and then a command (cast).");
-					} else if (inputID == -4) {
-						log("Movie number out of bounds (try a number 1-5).");
-					}
-					
-					if (inputSplit[0].contains("quit")) 
+					// If 'quit' is typed.
+					if (inputID == -1) 
 						break;
+					
+					if (inputID == -2)
+						listCurrentSearch(movies, list);
 				}
 				
-				// Condition can only be met if 'quit' is typed above. 
 				// Exits search. Goes back to main loop.
-				if (inputSplit[0].contains("quit")) {
+				if (inputID == -1)
 					break;
-				}
 				 
 				// Stores input, movie, and movie name.
 				String inputCommand = inputSplit[1];
@@ -161,58 +163,77 @@ public class DatabaseInit {
 				String movieName = api.getMovies().getMovie(list[inputID], "en").getTitle();
 
 				// Checks command and calls associated method to handle request. 
-				//searchCommand(inputID, inputCommand, list);
-				if (inputID < 1 || inputID > 5) {
+				int commandID = getSearchInputCommand(inputID, inputCommand);
+				
+				// Gets cast, rating, similar, revenue, and genre based on command.
+				if (commandID == 0) 
 					log("Invalid movie ID!");
-				
-				} else if (inputCommand.contains("cast")) {
+				else if (commandID == 1)
 					getCast(list, inputID);
-				
-				} else if (inputCommand.contains("rating")) {
+				else if (commandID == 2)
 					getRating(movie, movieName);
-				
-				} else if (inputCommand.contains("similar")) {
+				else if (commandID == 3) 
 					getSimilar(movie, movieName, list, inputID);
-				
-				} else if (inputCommand.contains("revenue")) {
+				else if (commandID == 4) 
 					getRevenue(movie, movieName);
-					
-				} else if (inputCommand.contains("genre")) {
+				else if (commandID == 5)
 					getGenres(movie, movieName);
-					
-				} else {
-					log("Command not recognized.");
-				}
+				else if (commandID == 6)
+					log("Movie command " + inputCommand + " not recognized. Try a valid command (cast).");
 			}
 		}
 	}
 
-	
+	/** Gets search command ID. 
+	 * @param inputID inputID
+	 * @param inputCommand input command
+	 * @return commandID command ID*/
+	public static int getSearchInputCommand(final int inputID, final String inputCommand) {
+		if (inputID < 1 || inputID > 5)
+			return 0;
+		else if (inputCommand.contains("cast"))
+			return 1;
+		else if (inputCommand.contains("rating"))
+			return 2;
+		else if (inputCommand.contains("similar"))
+			return 3;
+		else if (inputCommand.contains("revenue")) 
+			return 4;
+		else if (inputCommand.contains("genre")) 
+			return 5;
+		
+		return 6;
+	}
+
 	/** Gets search input ID. 
 	 * @param input input
-	 * @return inputID inputID*/
-	private static int getSearchInputID(final String input) {
-		int inputID;
+	 * @return inputID input ID*/
+	public static int getSearchInputID(final String input) {
+		int inputID = 0;
+		
 		try {
 			inputID = Integer.parseInt(input);
 			
 			if (inputID > 0 && inputID < 6) 
 				return inputID;
 			
-			if (inputID < 0 || inputID > 5) 
+			if (inputID < 1 || inputID > 5) 
+				log("Movie number out of bounds (try a number 1-5).");
 				return -4;
 				
 		} catch (Exception e) {
 			if (input.contains("quit")) {
+				log("Exiting search... Goodbye!");
 				return -1;
 			} else if (input.equals("h")) {
+				log("\nType a movie number and one of the following: Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
+				log("Type 'h' to relist movies in current search. Type 'quit' to exit search.");
 				return -2;
 			} else {
+				log("Movie command not recognized, try a number (1-5) and then a command (cast).");
 				return -3;
 			}
 		}
-		
-		return 0;
 	}
 
 	
