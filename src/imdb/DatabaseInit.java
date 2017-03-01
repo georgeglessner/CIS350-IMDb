@@ -26,105 +26,160 @@ public class DatabaseInit {
 	/** Movies. */
 	static TmdbMovies movies = api.getMovies();
 
-	/** Main Loop. 
+	/** Main. 
 	 * @param args arguments*/
 	public static void main(final String[] args) {
+		// List main commands.
 		listMainCommands();
 		
-		String input = "";
-
+		// Input.
+		String input;
+		
+		// Main loop.
 		// Checks command and calls associated method to handle request.
 		// Search loop entered if a search is made. 
 		while (true) {
-
-			log("Enter a command (H for help):  ");
-			int x = 1;
 			
-			try { 
-				input = input().toLowerCase();
-				x = runCommand(input);
+			// Allows argument input for testing.
+			try {
+				input = args[0];
+			} catch (Exception e) {
+				input = "";
+			}
+			
+			log("Enter a command (H for help):  ");
+			
+			// Breaks if argument is inputed (only JUnit tests). 
+			if (!input.equals("")) {
+				run(input);
+				break;
+			}
+			
+			try {
+				input = input("").toLowerCase();
 			} catch (Exception e) {
 				log("Error assigning input.");
 			}
-			
-			// Pulled these out so I could test runCommand.
-			if (x == 4)
-				searchMovies(input);
-			if (x == 0)
-				System.exit(0);
+		
+			run(input);
 		}
+		
+	}
+
+	public static int run(String input) {
+		int status = -1;
+		
+		try {
+			status = runCommand(input);
+		} catch (Exception e) {
+			status = -1;
+		}	
+		
+		// Pulled these out so I could test runCommand.
+		if (status == 4)
+			searchMovies(input, false, "");
+		if (status == 0)
+			System.exit(0);
+		
+		return status;
 	}
 
 	/** Main commands
 	 * @param input input
 	 * @return */
 	public static int runCommand(final String input){
+		int status;
+		
 		if (input.equals("quit")) {
 			log("Good bye!");
-			return 0;
+			status = 0;
 		
 		} else if (input.equals("top")) {
-			topMovies(movies);
-			return 1;
+			status = topMovies(movies);
 		
 		} else if (input.equals("now")) {
-			nowMovies(movies);
-			return 1;
+			status = nowMovies(movies);
 		
 		} else if (input.equals("upcoming")) {
-			upcomingMovies(movies);
-			return 1;
+			status = upcomingMovies(movies);
 		
 		} else if (input.equals("h")) {
-			listMainCommands();
-			return 2;
+			status = listMainCommands();
 		
 		} else if (input.equals("")) {
+			status = 3;
 			log("Empty input not valid.");
-			return 3;
+		
+		} else {
+			status = 4;
 		}
-			else {
-			return 4;
-		}
+		
+		return status;
 	}
 	
 	/** Lists top movies.
 	 * @param movies movies */
-	private static void topMovies(final TmdbMovies movies) {
-		for (int i = 0; i < movies.getPopularMovies("en", 0).getResults().size(); i++) {
-			log((i + 1) + ") " + movies.getPopularMovies("en", 0).getResults().get(i).getTitle());
+	private static int topMovies(final TmdbMovies movies) {
+		int status = -1;
+		
+		try { 
+			for (int i = 0; i < movies.getPopularMovies("en", 0).getResults().size(); i++) {
+				log((i + 1) + ") " + movies.getPopularMovies("en", 0).getResults().get(i).getTitle());
+			}
+			status = 1;
+		} catch (Exception e) {
+			status = -1;
 		}
+		
 		log("");
+		return status;
 	}
 	
 	
 	/** Lists now movies. 
 	 * @param movies movies*/
-	private static void nowMovies(final TmdbMovies movies) {
-		for (int i = 0; i < movies.getNowPlayingMovies("en", 0).getResults().size(); i++) {
-			log((i + 1) + ") " + movies.getNowPlayingMovies("en", 0).getResults().get(i).getTitle());
-		}
-		log("");
+	private static int nowMovies(final TmdbMovies movies) {
+		int status = -1;
 		
+		try {
+			for (int i = 0; i < movies.getNowPlayingMovies("en", 0).getResults().size(); i++) {
+				log((i + 1) + ") " + movies.getNowPlayingMovies("en", 0).getResults().get(i).getTitle());
+			}
+			status = 1;
+		} catch (Exception e) {
+			status = -1;
+		}
+		
+		log("");
+		return status;
 	}
 	
 	
 	/** Lists up and coming movies. 
 	 * @param movies movies*/
-	private static void upcomingMovies(final TmdbMovies movies) {
-		for (int i = 0; i < movies.getUpcoming("en", 0).getResults().size(); i++) {
-			log((i + 1) + ") " + movies.getUpcoming("en", 0).getResults().get(i).getTitle());
+	private static int upcomingMovies(final TmdbMovies movies) {
+		int status = -1;
+		
+		try {
+			for (int i = 0; i < movies.getUpcoming("en", 0).getResults().size(); i++) {
+				log((i + 1) + ") " + movies.getUpcoming("en", 0).getResults().get(i).getTitle());
+			}
+			status = 1;
+		} catch (Exception e) {
+			status = -1;
 		}
+		
 		log("");
+		return status;
 	}
 
 	
 	/** Search loop. 
 	 * @param input input*/
-	private static void searchMovies(final String input) {
+	public static int searchMovies(final String input, boolean test, String testCommand) {
 		log("Searching for movies with: " + input);
+		int status = 0;
 		int[] list = new int[6];
-		
 		List<MovieDb> movies = api.getSearch().searchMovie(input, 0, "en", false, 0).getResults();
 
 		if (movies.size() == 0) {
@@ -132,56 +187,83 @@ public class DatabaseInit {
 		} else {
 			list = listCurrentSearch(movies, list);
 			
+			// Main search loop.
 			while (true) {
-				log("\nType a movie number and one of the following:"); 
-				log("Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
-				log("Type 'h' to relist movies in current search. Type 'quit' to quit search.");
-				int inputID = 0;
-				String input2;
-				String[] inputSplit = new String[2];
-				
-				while (inputID < 1 || inputID > 5) {
-					input2 = input().toLowerCase();
-					inputSplit = input2.split(" ");
-					inputID = getSearchInputID(inputSplit[0]);
+				if (!testCommand.equals(""))
+					status = getFinalSearchCommand(testCommand, list);
+				else 
+					status = getFinalSearchCommand("", list);
 					
-					// If 'quit' is typed.
-					if (inputID == -1) 
-						break;
-					
-					if (inputID == -2)
-						listCurrentSearch(movies, list);
-				}
+				// If input is 'h'.
+				// Lists current search.
+				if (status == -2)
+					listCurrentSearch(movies, list);
 				
+				// If input is 'quit'.
 				// Exits search. Goes back to main loop.
-				if (inputID == -1)
+				if (status == -1 || test)
 					break;
-				 
-				// Stores input, movie, and movie name.
-				String inputCommand = inputSplit[1];
-				MovieDb movie = api.getMovies().getMovie(list[inputID], "en");
-				String movieName = api.getMovies().getMovie(list[inputID], "en").getTitle();
-
-				// Checks command and calls associated method to handle request. 
-				int commandID = getSearchInputCommand(inputID, inputCommand);
 				
-				// Gets cast, rating, similar, revenue, and genre based on command.
-				if (commandID == 0) 
-					log("Invalid movie ID!");
-				else if (commandID == 1)
-					getCast(list, inputID);
-				else if (commandID == 2)
-					getRating(movie, movieName);
-				else if (commandID == 3) 
-					getSimilar(movie, movieName, list, inputID);
-				else if (commandID == 4) 
-					getRevenue(movie, movieName);
-				else if (commandID == 5)
-					getGenres(movie, movieName);
-				else if (commandID == 6)
-					log("Movie command " + inputCommand + " not recognized. Try a valid command (cast).");
 			}
 		}
+		
+		return status;
+	}
+	
+
+	public static int getFinalSearchCommand(String input, int[] list) {
+		log("\nType a movie number and one of the following:"); 
+		log("Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
+		log("Type 'h' to relist movies in current search. Type 'quit' to quit search.");
+		int inputID = 0;
+		String input2;
+		String[] inputSplit = new String[2];
+		
+		while (inputID < 1 || inputID > 5) {
+			// Allows string input for testing.
+			if (input.equals(""))
+				input2 = input("").toLowerCase();
+			else 
+				input2 = input;
+			
+			inputSplit = input2.split(" ");
+			inputID = getSearchInputID(inputSplit[0]);
+			
+			// If 'quit' is typed.
+			if (inputID == -1) 
+				return -1;
+			
+			if (inputID == -2)
+				return -2;
+				
+			input = "";
+		}
+		 
+		// Stores input, movie, and movie name.
+		String inputCommand = inputSplit[1];
+		MovieDb movie = api.getMovies().getMovie(list[inputID], "en");
+		String movieName = api.getMovies().getMovie(list[inputID], "en").getTitle();
+
+		// Checks command and calls associated method to handle request. 
+		int commandID = getSearchInputCommand(inputID, inputCommand);
+		
+		// Gets cast, rating, similar, revenue, and genre based on command.
+		if (commandID == 0) 
+			log("Invalid movie ID!");
+		else if (commandID == 1)
+			getCast(list, inputID);
+		else if (commandID == 2)
+			getRating(movie, movieName);
+		else if (commandID == 3) 
+			getSimilar(movie, movieName, list, inputID);
+		else if (commandID == 4) 
+			getRevenue(movie, movieName);
+		else if (commandID == 5)
+			getGenres(movie, movieName);
+		else if (commandID == 6)
+			log("Movie command " + inputCommand + " not recognized. Try a valid command (cast).");
+		
+		return 1;
 	}
 
 	/** Gets search command ID. 
@@ -259,7 +341,7 @@ public class DatabaseInit {
 		
 		for (int i = 0; i < (cast.size() > 5 ? 5 : cast.size()); i++) {
 			log((i + 1) + ") " + cast.get(i).getName() + " who plays "  
-		+ (cast.get(i).getCharacter() != "" ? cast.get(i).getCharacter() 
+		+ (!cast.get(i).getCharacter().equals("") ? cast.get(i).getCharacter() 
 			: "unknown"));
 		}
 	}
@@ -314,19 +396,24 @@ public class DatabaseInit {
 	
 	/** Input. 
 	 * @return br input*/
-	public static String input() {
+	public static String input(String input) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		if (!input.equals(""))
+			return input;
+		
 		try {
 			return br.readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		return null;
 	}
 
 	
 	/** Main command list. */
-	public static void listMainCommands() {
+	public static int listMainCommands() {
 		log("List of commands");
 		log("'H' = Help");
 		log("'Top' = Displays current top 20 Movies");
@@ -334,21 +421,10 @@ public class DatabaseInit {
 		log("'Upcoming' = List of movies upcoming");
 		log("'Quit' = To quit");
 		log("Or enter title of movie to search\n");
+		
+		return 2;
 	}
 	
-	
-	/** Deprecated. */ 
-	public static void listSearchCommands() {
-		log("Type the number and one of the following:");
-		log("'C' = Cast");
-		log("'Rat' = Rating");
-		log("'S' = Similar");
-		log("'Rev' = Revenue");
-		log("'G' = Genres");
-		log("'H' = Help (relists movies)");
-		log("Example: '1 c'"); 
-	}
-
 	
 	/** Log.
 	 * @param s string*/
