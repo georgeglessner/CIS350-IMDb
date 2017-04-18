@@ -64,7 +64,7 @@ public class DatabaseInit {
 
 	}
 
-	public static int run(String input) {
+	public static int run(final String input) {
 		int status = -1;
 
 		try {
@@ -74,8 +74,6 @@ public class DatabaseInit {
 		}
 
 		// Pulled these out so I could test runCommand.
-		if (status == 4)
-			searchMovies(input, false, "");
 		if (status == 0)
 			System.exit(0);
 
@@ -185,38 +183,55 @@ public class DatabaseInit {
 	 * @param testCommand command
 	 * @return status
 	 */
-	public static int searchMovies(final String input, final boolean test, final String testCommand) {
-		log("Searching for movies with: " + input);
-		int status = 0;
-		int[] list = new int[6];
-		List<MovieDb> smovies = api.getSearch().searchMovie(input, 0, "en", false, 0).getResults();
-
-		if (smovies.size() == 0) {
-			log("Title not found, try again.");
-		} else {
-			list = listCurrentSearch(smovies, list);
-
-			// Main search loop.
-			while (true) {
-				if (!testCommand.equals(""))
-					status = getFinalSearchCommand(testCommand, list);
-				else
-					status = getFinalSearchCommand("", list);
-
-				// If input is 'h'.
-				// Lists current search.
-				if (status == -2)
-					listCurrentSearch(smovies, list);
-
-				// If input is 'quit'.
-				// Exits search. Goes back to main loop.
-				if (status == -1 || test)
-					break;
-
+	public String[] searchMovies(final String input, final boolean test, final String testCommand) {
+		String[] moviesList;
+		
+		List<MovieDb> searchMovies = api.getSearch().searchMovie(input, 0, "en", false, 0).getResults();
+		
+		int maxMovie = 20;
+		
+		try {
+			if (searchMovies.size() < 20)
+				maxMovie = searchMovies.size();
+			
+			moviesList = new String[maxMovie];
+			for (int x = 0; x < maxMovie; x++) {
+				moviesList[x] = searchMovies.get(x).getTitle();
 			}
-		}
+		} catch (Exception e) {
+			String[] errorList = new String[] {
+					"Movie search did not work."
+				};
+				return errorList;
+		} 
 
-		return status;
+		if (searchMovies.size() == 0) {
+			String[] errorList = new String[] {
+					"Movie search yielded no results."
+				};
+				return errorList;
+		} 
+//
+//			// Main search loop.
+//			while (true) {
+//				if (!testCommand.equals(""))
+//					status = getFinalSearchCommand(testCommand, list);
+//				else
+//					status = getFinalSearchCommand("", list);
+//
+//				// If input is 'h'.
+//				// Lists current search.
+//				if (status == -2)
+//					listCurrentSearch(smovies, list);
+//
+//				// If input is 'quit'.
+//				// Exits search. Goes back to main loop.
+//				if (status == -1 || test)
+//					break;
+//
+//			}
+
+		return moviesList;
 	}
 
 	/**
@@ -444,7 +459,7 @@ public class DatabaseInit {
 	 * 
 	 * @return br input
 	 */
-	public static String input(String input) {
+	public static String input(final String input) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		if (!input.equals(""))
