@@ -21,7 +21,7 @@ import info.movito.themoviedbapi.model.people.PersonCast;
 public class DatabaseInit {
 
 	public DatabaseInit() {
-		SearchModel s = new SearchModel();
+		
 	}
 
 	/** API. */

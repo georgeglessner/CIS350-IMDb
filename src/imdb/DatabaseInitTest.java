@@ -273,13 +273,7 @@ public class DatabaseInitTest {
 			fail("Main quit is failing.");
 	}
 	
-	@Test
-	public void testMainCommands() {
-		int x = DatabaseInit.listMainCommands();
-		if (x != 2)
-			fail("Main commands are failing.");
-	}
-	
+
 	@Test
 	public void testRunNow() {
 		int x = DatabaseInit.run("now");
@@ -311,40 +305,6 @@ public class DatabaseInitTest {
 		}
 	}
 	
-	@Test
-	public void TestSearchArgCast() {
-		int x = DatabaseInit.searchMovies("lord of the", true, "1 cast");
-		if (x != 1)
-			fail("Seach is failing.");
-	}
-	
-	@Test
-	public void TestSearchArgRating() {
-		int x = DatabaseInit.searchMovies("lord of the", true, "1 rating");
-		if (x != 1)
-			fail("Seach is failing.");
-	}
-	
-	@Test
-	public void TestSearchArgSimilar() {
-		int x = DatabaseInit.searchMovies("lord of the", true, "1 similar");
-		if (x != 1)
-			fail("Seach is failing.");
-	}
-	
-	@Test
-	public void TestSearchArgRevenue() {
-		int x = DatabaseInit.searchMovies("lord of the", true, "1 revenue");
-		if (x != 1)
-			fail("Seach is failing.");
-	}
-	
-	@Test
-	public void TestSearchArgGenres() {
-		int x = DatabaseInit.searchMovies("lord of the", true, "1 genre");
-		if (x != 1)
-			fail("Seach is failing.");
-	}
 	
 	@Test
 	public void TestInput() {
