@@ -4,8 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/** Test class. */
 public class DatabaseInitTest {
 
+	/** Search Top Movies. */
 	@Test
 	public void testTopMovies() {
 		int x = DatabaseInit.runCommand("top");
@@ -14,6 +16,7 @@ public class DatabaseInitTest {
 			fail("Top movies is failing.");
 	}
 	
+	/** Search Now Playing. */
 	@Test
 	public void testNowMovies() {
 		int x = DatabaseInit.runCommand("now");
@@ -22,6 +25,7 @@ public class DatabaseInitTest {
 			fail("Now is failing.");
 	}
 	
+	/** Search Upcoming Movies. */
 	@Test
 	public void testUpcomingMovies() {
 		int x = DatabaseInit.runCommand("upcoming");
@@ -30,6 +34,7 @@ public class DatabaseInitTest {
 			fail("Upcoming is failing.");
 	}
 	
+	/** Search Help. */
 	@Test
 	public void testHelpMain() {
 		int x = DatabaseInit.runCommand("h");
@@ -38,6 +43,7 @@ public class DatabaseInitTest {
 			fail("Help is failing.");
 	}
 	
+	/** Test Empty Main. */
 	@Test
 	public void testEmptyMain() {
 		int x = DatabaseInit.runCommand("");
@@ -46,6 +52,7 @@ public class DatabaseInitTest {
 			fail("Empty command is failing.");
 	}
 	
+	/** Test quit. */
 	@Test
 	public void testQuitMain() {
 		int x = DatabaseInit.runCommand("quit");
@@ -54,6 +61,7 @@ public class DatabaseInitTest {
 			fail("Main quit is failing.");
 	}
 	
+	/** Test search. */
 	@Test
 	public void testSearch1() {
 		int x = DatabaseInit.runCommand("Lord of the");
@@ -61,6 +69,7 @@ public class DatabaseInitTest {
 			fail("Search is failing.");
 	}
 	
+	/** Test search 2. */
 	@Test
 	public void testSearch2() {
 		int x = DatabaseInit.runCommand("Into the");
@@ -68,6 +77,8 @@ public class DatabaseInitTest {
 			fail("Search is failing.");
 	}
 	
+	
+	/** Test search 3. */
 	@Test
 	public void testSearch3() {
 		int x = DatabaseInit.runCommand("Harry Potter");
@@ -75,6 +86,7 @@ public class DatabaseInitTest {
 			fail("Search is failing.");
 	}
 	
+	/** Search ID. */
 	@Test
 	public void testSearchInputGood1() {
 		int x = DatabaseInit.getSearchInputID("1");
@@ -82,6 +94,7 @@ public class DatabaseInitTest {
 			fail("Search is failing.");
 	}
 	
+	/** Search ID 2. */
 	@Test
 	public void testSearchInputGood2() {
 		int x = DatabaseInit.getSearchInputID("2");
@@ -89,6 +102,7 @@ public class DatabaseInitTest {
 			fail("Search is failing.");
 	}
 	
+	/** Search ID 3. */
 	@Test
 	public void testSearchInputGood3() {
 		int x = DatabaseInit.getSearchInputID("3");
@@ -96,6 +110,7 @@ public class DatabaseInitTest {
 			fail("Search is failing.");
 	}
 	
+	/** Search ID 4. */
 	@Test
 	public void testSearchInputGood4() {
 		int x = DatabaseInit.getSearchInputID("4");
@@ -103,6 +118,7 @@ public class DatabaseInitTest {
 			fail("Search is failing.");
 	}
 	
+	/** Search ID 5. */
 	@Test
 	public void testSearchInputGood5() {
 		int x = DatabaseInit.getSearchInputID("5");
@@ -110,6 +126,7 @@ public class DatabaseInitTest {
 			fail("Search is failing.");
 	}
 	
+	/** Search index out of bounds. */
 	@Test
 	public void testSearchInputOutOfBoundsSmall() {
 		int x = DatabaseInit.getSearchInputID("0");
@@ -117,6 +134,7 @@ public class DatabaseInitTest {
 			fail("Lower search bounds are failing.");
 	}
 	
+	/** Search index out of bounds big. */
 	@Test
 	public void testSearchInputOutOfBoundsBig() {
 		int x = DatabaseInit.getSearchInputID("6");
@@ -124,6 +142,7 @@ public class DatabaseInitTest {
 			fail("Upper search bounds are failing.");
 	}
 	
+	/** Search quit. */
 	@Test
 	public void testSearchInputQuit() {
 		int x = DatabaseInit.getSearchInputID("quit");
@@ -131,6 +150,7 @@ public class DatabaseInitTest {
 			fail("Quit search is failing.");
 	}
 	
+	/** Search help. */
 	@Test
 	public void testSearchInputHelp() {
 		int x = DatabaseInit.getSearchInputID("h");
@@ -138,6 +158,7 @@ public class DatabaseInitTest {
 			fail("Search help is failing.");
 	}
 	
+	/** Search random input. */
 	@Test
 	public void testSearchInputIDRandom1() {
 		int x = DatabaseInit.getSearchInputID("asdfasd asdfa");
@@ -145,6 +166,7 @@ public class DatabaseInitTest {
 			fail("Random search command is failing.");
 	}
 	
+	/** Search random input 2. */
 	@Test
 	public void testSearchInputIDRandom2() {
 		int x = DatabaseInit.getSearchInputID("12asdf asdfa");
@@ -152,6 +174,7 @@ public class DatabaseInitTest {
 			fail("Random search command is failing.");
 	}
 	
+	/** Search random input 3. */
 	@Test
 	public void testSearchInputIDRandom3() {
 		int x = DatabaseInit.getSearchInputID("!74a ;alksdf");
@@ -159,6 +182,7 @@ public class DatabaseInitTest {
 			fail("Random search command is failing.");
 	}
 
+	/** Search command fail. */
 	@Test
 	public void testSearchCommandIDFail1() {
 		int x = DatabaseInit.getSearchInputCommand(0, "cast");
@@ -166,6 +190,7 @@ public class DatabaseInitTest {
 			fail("Command inputID bounds check is failing.");
 	}
 	
+	/** Search command fail 2. */
 	@Test
 	public void testSearchCommandIDFail2() {
 		int x = DatabaseInit.getSearchInputCommand(6, "cast");
@@ -173,6 +198,7 @@ public class DatabaseInitTest {
 			fail("Command inputID bounds check is failing.");
 	}
 	
+	/** Search cast. */
 	@Test
 	public void testSearchCast() {
 		int x = DatabaseInit.getSearchInputCommand(1, "cast");
@@ -180,6 +206,7 @@ public class DatabaseInitTest {
 			fail("Search cast is failing.");
 	}
 	
+	/** Search rating. */
 	@Test
 	public void testSearchRating() {
 		int x = DatabaseInit.getSearchInputCommand(1, "rating");
@@ -187,6 +214,7 @@ public class DatabaseInitTest {
 			fail("Search rating is failing.");
 	}
 	
+	/** Search Similar. */
 	@Test
 	public void testSearchSimilar() {
 		int x = DatabaseInit.getSearchInputCommand(1, "similar");
@@ -194,6 +222,7 @@ public class DatabaseInitTest {
 			fail("Search similar is failing.");
 	}
 	
+	/** Search Revenue. */
 	@Test
 	public void testSearchRevenue() {
 		int x = DatabaseInit.getSearchInputCommand(1, "revenue");
@@ -201,6 +230,7 @@ public class DatabaseInitTest {
 			fail("Search revenue is failing.");
 	}
 	
+	/** Search Genre. */
 	@Test
 	public void testSearchGenre() {
 		int x = DatabaseInit.getSearchInputCommand(1, "genre");
@@ -208,6 +238,7 @@ public class DatabaseInitTest {
 			fail("Search genre is failing.");
 	}
 	
+	/** Search Random Command. */
 	@Test
 	public void testSearchCommandRandom1() {
 		int x = DatabaseInit.getSearchInputCommand(1, "asdf");
@@ -215,6 +246,7 @@ public class DatabaseInitTest {
 			fail("Search no commmand found is failing.");
 	}
 	
+	/** Search Random Command 2. */
 	@Test
 	public void testSearchCommandRandom2() {
 		int x = DatabaseInit.getSearchInputCommand(1, "141dfa asdf ");
@@ -222,6 +254,7 @@ public class DatabaseInitTest {
 			fail("Search no command found is failing.");
 	}
 	
+	/** Search Random Command 3. */
 	@Test
 	public void testSearchCommandRandom3() {
 		int x = DatabaseInit.getSearchInputCommand(1, "'`141dfa aas32 ");
@@ -229,6 +262,7 @@ public class DatabaseInitTest {
 			fail("Search no command found is failing.");
 	}
 	
+	/** Search Random. */
 	@Test
 	public void randomTRexTest() {
 		// Feedback integer.

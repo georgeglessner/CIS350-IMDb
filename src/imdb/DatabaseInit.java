@@ -20,6 +20,9 @@ import info.movito.themoviedbapi.model.people.PersonCast;
  **********************************************************************/
 public class DatabaseInit {
 	
+	private DatabaseInit() {
+		
+	}
 	/** API. */
 	static TmdbApi api = new TmdbApi("dbae952f0b2a4b3711bf5808e97c4769");
 	
@@ -55,10 +58,11 @@ public class DatabaseInit {
 		}
 	}
 
-	/** Main commands
+	/** Main commands.
 	 * @param input input
-	 * @return */
-	public static int runCommand(final String input){
+	 * @return 1 working 
+	 * */
+	public static int runCommand(final String input) {
 		if (input.equals("quit")) {
 			log("Good bye!");
 			return 0;
@@ -82,8 +86,7 @@ public class DatabaseInit {
 		} else if (input.equals("")) {
 			log("Empty input not valid.");
 			return 3;
-		}
-			else {
+		} else {
 			return 4;
 		}
 	}
@@ -154,8 +157,8 @@ public class DatabaseInit {
 				}
 				
 				// Exits search. Goes back to main loop.
-				if (inputID == -1)
-					break;
+//				if (inputID == -1)
+//					break;
 				 
 				// Stores input, movie, and movie name.
 				String inputCommand = inputSplit[1];
@@ -217,9 +220,10 @@ public class DatabaseInit {
 			if (inputID > 0 && inputID < 6) 
 				return inputID;
 			
-			if (inputID < 1 || inputID > 5) 
+			if (inputID < 1 || inputID > 5) {
 				log("Movie number out of bounds (try a number 1-5).");
 				return -4;
+			}
 				
 		} catch (Exception e) {
 			if (input.contains("quit")) {
@@ -259,7 +263,7 @@ public class DatabaseInit {
 		
 		for (int i = 0; i < (cast.size() > 5 ? 5 : cast.size()); i++) {
 			log((i + 1) + ") " + cast.get(i).getName() + " who plays "  
-		+ (cast.get(i).getCharacter() != "" ? cast.get(i).getCharacter() 
+		+ (!cast.get(i).getCharacter().equals("") ? cast.get(i).getCharacter() 
 			: "unknown"));
 		}
 	}

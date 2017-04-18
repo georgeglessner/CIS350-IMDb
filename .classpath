@@ -16,8 +16,8 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/gabevansolkema/Coding/GVSU/CIS350/MovieProject/CIS350-IMDb/slf4j-api-1.7.22.jar"/>
-	<classpathentry kind="lib" path="/Users/gabevansolkema/Coding/GVSU/CIS350/MovieProject/CIS350-IMDb/slf4j-simple-1.7.22.jar"/>
-	<classpathentry kind="lib" path="/Users/gabevansolkema/Coding/GVSU/CIS350/MovieProject/CIS350-IMDb/themoviedbapi-1.4.jar"/>
+	<classpathentry kind="lib" path="/Users/georgeglessner/Documents/workspace/movie_database/CIS350-IMDb/slf4j-api-1.7.22.jar"/>
+	<classpathentry kind="lib" path="/Users/georgeglessner/Documents/workspace/movie_database/CIS350-IMDb/slf4j-simple-1.7.22.jar"/>
+	<classpathentry kind="lib" path="/Users/georgeglessner/Documents/workspace/movie_database/CIS350-IMDb/themoviedbapi-1.4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
