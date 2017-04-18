@@ -96,8 +96,6 @@ public class DatabaseInit {
 			log("Good bye!");
 			status = 0;
 
-		} else if (input.equals("h")) {
-			status = listMainCommands();
 
 		} else if (input.equals("")) {
 			status = 3;
@@ -113,15 +111,15 @@ public class DatabaseInit {
 	/**
 	 * Lists top movies.
 	 * 
-	 * @param movies
-	 * @return String[] movieList
+	 * @param tmovies movies
+	 * @return String[] moviesList
 	 */
-	public static String[] topMovies(final TmdbMovies movies) {
+	public static String[] topMovies(final TmdbMovies tmovies) {
 		String[] moviesList = new String[20];
 
 		try {
-			for (int i = 0; i < movies.getPopularMovies("en", 0).getResults().size(); i++) {
-				moviesList[i] = movies.getPopularMovies("en", 0).getResults().get(i).getTitle();
+			for (int i = 0; i < tmovies.getPopularMovies("en", 0).getResults().size(); i++) {
+				moviesList[i] = tmovies.getPopularMovies("en", 0).getResults().get(i).getTitle();
 			}
 		} catch (Exception e) {
 			String[] errorList = new String[] {
@@ -136,15 +134,15 @@ public class DatabaseInit {
 	/**
 	 * Lists now movies.
 	 * 
-	 * @param movies
-	 *            movies
+	 * @param tmovies movies
+	 * @return moviesList
 	 */
-	public static String[] nowMovies(final TmdbMovies movies) {
+	public static String[] nowMovies(final TmdbMovies tmovies) {
 		String[] moviesList = new String[20];
 
 		try {
-			for (int i = 0; i < movies.getNowPlayingMovies("en", 0).getResults().size(); i++) {
-				moviesList[i] = movies.getNowPlayingMovies("en", 0).getResults().get(i).getTitle();
+			for (int i = 0; i < tmovies.getNowPlayingMovies("en", 0).getResults().size(); i++) {
+				moviesList[i] = tmovies.getNowPlayingMovies("en", 0).getResults().get(i).getTitle();
 			}
 		} catch (Exception e) {
 			String[] errorList = new String[] {
@@ -159,15 +157,15 @@ public class DatabaseInit {
 	/**
 	 * Lists up and coming movies.
 	 * 
-	 * @param movies
-	 *            movies
+	 * @param tmovies movies
+	 * @return String[] moviesList
 	 */
-	public static String[] upcomingMovies(final TmdbMovies movies) {
+	public static String[] upcomingMovies(final TmdbMovies tmovies) {
 		String[] moviesList = new String[20];
 
 		try {
-			for (int i = 0; i < movies.getUpcoming("en", 0).getResults().size(); i++) {
-				moviesList[i] = movies.getUpcoming("en", 0).getResults().get(i).getTitle();
+			for (int i = 0; i < tmovies.getUpcoming("en", 0).getResults().size(); i++) {
+				moviesList[i] = tmovies.getUpcoming("en", 0).getResults().get(i).getTitle();
 			}
 		} catch (Exception e) {
 			String[] errorList = new String[] {
@@ -182,19 +180,21 @@ public class DatabaseInit {
 	/**
 	 * Search loop.
 	 * 
-	 * @param input
-	 *            input
+	 * @param input input
+	 * @param test test
+	 * @param testCommand command
+	 * @return status
 	 */
-	public static int searchMovies(final String input, boolean test, String testCommand) {
+	public static int searchMovies(final String input, final boolean test, final String testCommand) {
 		log("Searching for movies with: " + input);
 		int status = 0;
 		int[] list = new int[6];
-		List<MovieDb> movies = api.getSearch().searchMovie(input, 0, "en", false, 0).getResults();
+		List<MovieDb> smovies = api.getSearch().searchMovie(input, 0, "en", false, 0).getResults();
 
-		if (movies.size() == 0) {
+		if (smovies.size() == 0) {
 			log("Title not found, try again.");
 		} else {
-			list = listCurrentSearch(movies, list);
+			list = listCurrentSearch(smovies, list);
 
 			// Main search loop.
 			while (true) {
@@ -206,7 +206,7 @@ public class DatabaseInit {
 				// If input is 'h'.
 				// Lists current search.
 				if (status == -2)
-					listCurrentSearch(movies, list);
+					listCurrentSearch(smovies, list);
 
 				// If input is 'quit'.
 				// Exits search. Goes back to main loop.
@@ -219,7 +219,15 @@ public class DatabaseInit {
 		return status;
 	}
 
-	public static int getFinalSearchCommand(String input, int[] list) {
+	/**
+	 * Final Search Command.
+	 * 
+	 * @param input input
+	 * @param list list
+	 * @return status
+	 */
+	public static int getFinalSearchCommand(final String input, final int[] list) {
+
 		log("\nType a movie number and one of the following:");
 		log("Cast, Rating, Similar, Revenue, or Genre (eg: '1 cast').");
 		log("Type 'h' to relist movies in current search. Type 'quit' to quit search.");
@@ -243,8 +251,6 @@ public class DatabaseInit {
 
 			if (inputID == -2)
 				return -2;
-
-			input = "";
 		}
 
 		// Stores input, movie, and movie name.
@@ -338,16 +344,16 @@ public class DatabaseInit {
 	/**
 	 * Lists current search.
 	 * 
-	 * @param movies
+	 * @param cmovies
 	 *            movies
 	 * @param list
 	 *            list
 	 * @return list list
 	 */
-	private static int[] listCurrentSearch(final List<MovieDb> movies, final int[] list) {
-		for (int i = 0; i < (movies.size() > 5 ? 5 : movies.size()); i++) {
-			log((i + 1) + ") " + movies.get(i).getTitle() + " (" + movies.get(i).getReleaseDate().split("-")[0] + ")");
-			list[i + 1] = movies.get(i).getId();
+	private static int[] listCurrentSearch(final List<MovieDb> cmovies, final int[] list) {
+		for (int i = 0; i < (cmovies.size() > 5 ? 5 : cmovies.size()); i++) {
+			log((i + 1) + ") " + cmovies.get(i).getTitle() + " (" + cmovies.get(i).getReleaseDate().split("-")[0] + ")");
+			list[i + 1] = cmovies.get(i).getId();
 		}
 		return list;
 	}
@@ -453,7 +459,11 @@ public class DatabaseInit {
 		return null;
 	}
 
-	/** Main command list. */
+	/** Main command list. 
+	 * 
+	 * @return status status
+	 * /
+	
 	public static int listMainCommands() {
 		log("List of commands");
 		log("'H' = Help");
