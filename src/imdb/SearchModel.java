@@ -1,23 +1,24 @@
 package imdb;
 
 import java.util.ArrayList;
-
 import javax.swing.table.AbstractTableModel;
 
 public class SearchModel extends AbstractTableModel {
-	private ArrayList<String> movies;
+	public ArrayList<String> entities;
+	public ArrayList<String> releaseYears;
 	private String columns[];
 
 	public SearchModel() {
-		movies = new ArrayList<String>();
-		columns = new String[] { "Results" };
+		entities = new ArrayList<String>();
+		releaseYears = new ArrayList<String>();
+		columns = new String[] {  " ", "Title", "Year Released", };
 	}
 
 	@Override
 	public int getRowCount() {
 		// TODO Auto-generated method stub
 		try {
-			return movies.size();
+			return entities.size();
 		} catch (Exception e) {
 			return 0;
 		}
@@ -39,16 +40,26 @@ public class SearchModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return movies.get(rowIndex);
+		if (columnIndex == 0) return "   ";
+		if (columnIndex == 2) 
+			return releaseYears.get(rowIndex);
+		
+		return entities.get(rowIndex);
 	}
 
-	public void addMovie(String movieName) {
+	public void addEntity(String name, String year) {
 		// TODO Auto-generated method stub
-		movies.add(movieName);
+		entities.add(name);
+		
+		if (year == "")
+			releaseYears.add("---");
+		else 
+			releaseYears.add(year);
 	}
 
-	public void clearMovies() {
-		movies.clear();
+	public void clear() {
+		entities.clear();
+		releaseYears.clear();
 	}
 
 	public void update() {

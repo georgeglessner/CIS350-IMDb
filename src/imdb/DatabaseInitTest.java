@@ -5,75 +5,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class DatabaseInitTest {
-
-	@Test
-	public void testTopMovies() {
-		int x = DatabaseInit.runCommand("top");
-		
-		if (x != 1)
-			fail("Top movies is failing.");
-	}
-	
-	@Test
-	public void testNowMovies() {
-		int x = DatabaseInit.runCommand("now");
-		
-		if (x != 1)
-			fail("Now is failing.");
-	}
-	
-	@Test
-	public void testUpcomingMovies() {
-		int x = DatabaseInit.runCommand("upcoming");
-		
-		if (x != 1)
-			fail("Upcoming is failing.");
-	}
-	
-	@Test
-	public void testHelpMain() {
-		int x = DatabaseInit.runCommand("h");
-		
-		if (x != 2)
-			fail("Help is failing.");
-	}
-	
-	@Test
-	public void testEmptyMain() {
-		int x = DatabaseInit.runCommand("");
-		
-		if (x != 3)
-			fail("Empty command is failing.");
-	}
-	
-	@Test
-	public void testQuitMain() {
-		int x = DatabaseInit.runCommand("quit");
-		
-		if (x != 0)
-			fail("Main quit is failing.");
-	}
-	
-	@Test
-	public void testSearch1() {
-		int x = DatabaseInit.runCommand("Lord of the");
-		if (x != 4)
-			fail("Search is failing.");
-	}
-	
-	@Test
-	public void testSearch2() {
-		int x = DatabaseInit.runCommand("Into the");
-		if (x != 4)
-			fail("Search is failing.");
-	}
-	
-	@Test
-	public void testSearch3() {
-		int x = DatabaseInit.runCommand("Harry Potter");
-		if (x != 4)
-			fail("Search is failing.");
-	}
 	
 	@Test
 	public void testSearchInputGood1() {
@@ -234,21 +165,6 @@ public class DatabaseInitTest {
 		// Feedback integer.
 		int z;
 		
-		// Now.
-		z = DatabaseInit.runCommand("now");
-		if (z != 1)
-			fail("Now is failing.");
-		
-		// Top.
-		z = DatabaseInit.runCommand("top");
-		if (z != 1)
-			fail("Top is failing.");
-		
-		// Search 'the dark'.
-		z = DatabaseInit.runCommand("the dark");
-		if (z != 4)
-			fail("Search is failing.");
-		
 		// Search help.
 		z = DatabaseInit.getSearchInputID("h");
 		if (z != -2)
@@ -267,33 +183,8 @@ public class DatabaseInitTest {
 		z = DatabaseInit.getSearchInputID("quit");
 		if (z != -1)
 			fail("Quit search is failing.");
-		
-		z = DatabaseInit.runCommand("quit");
-		if (z != 0)
-			fail("Main quit is failing.");
 	}
-	
 
-	@Test
-	public void testRunNow() {
-		int x = DatabaseInit.run("now");
-		if (x != 1)
-			fail("Run now is failing.");
-	}
-	
-	@Test
-	public void testRunTop() {
-		int x = DatabaseInit.run("top");
-		if (x != 1)
-			fail("Run top is failing.");
-	}
-	
-	@Test
-	public void TestRunUpcoming() {
-		int x = DatabaseInit.run("upcoming");
-		if (x != 1)
-			fail("Run upcoming is failing.");
-	}
 	
 	@Test
 	public void TestMainArg() {

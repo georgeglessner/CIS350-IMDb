@@ -8,8 +8,10 @@ import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
+import info.movito.themoviedbapi.TmdbTV;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.people.PersonCast;
+import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**********************************************************************
  * Program that allows user to find information about top 20 movies, upcoming
@@ -19,92 +21,37 @@ import info.movito.themoviedbapi.model.people.PersonCast;
  * @version 2/29/17
  **********************************************************************/
 public class DatabaseInit {
+	
+	public ArrayList<MovieDb> currMovies;
+	
+	public ArrayList<TvSeries> currShows;
 
 	public DatabaseInit() {
-		
+		currMovies = new ArrayList<MovieDb>();
+		currShows = new ArrayList<TvSeries>();
 	}
 
 	/** API. */
 	static TmdbApi api = new TmdbApi("dbae952f0b2a4b3711bf5808e97c4769");
 
 	/** Movies. */
-	static TmdbMovies movies = api.getMovies();
+	TmdbMovies movies = api.getMovies();
+	
+	/** TV shows. */
+	TmdbTV shows = api.getTvSeries();
+	
+	
 
 	/**
 	 * Main.
 	 * 
 	 * @param args
-	 *            arguments
+	 *            
 	 */
 	public static void main(final String[] args) {
-
 		new DatabaseInitGUI();
-		// List main commands.
-		/*
-		 * listMainCommands();
-		 * 
-		 * // Input. String input;
-		 * 
-		 * // Main loop. // Checks command and calls associated method to handle
-		 * request. // Search loop entered if a search is made. while (true) {
-		 * 
-		 * // Allows argument input for testing. try { input = args[0]; } catch
-		 * (Exception e) { input = ""; }
-		 * 
-		 * log("Enter a command (H for help):  ");
-		 * 
-		 * // Breaks if argument is inputed (only JUnit tests). if
-		 * (!input.equals("")) { run(input); break; }
-		 * 
-		 * try { input = input("").toLowerCase(); } catch (Exception e) { log(
-		 * "Error assigning input."); }
-		 * 
-		 * run(input); }
-		 */
-
 	}
 
-	public static int run(final String input) {
-		int status = -1;
-
-		try {
-			status = runCommand(input);
-		} catch (Exception e) {
-			status = -1;
-		}
-
-		// Pulled these out so I could test runCommand.
-		if (status == 0)
-			System.exit(0);
-
-		return status;
-	}
-
-	/**
-	 * Main commands
-	 * 
-	 * @param input
-	 *            input
-	 * @return
-	 */
-	public static int runCommand(final String input) {
-		int status;
-
-		if (input.equals("quit")) {
-			log("Good bye!");
-			status = 0;
-
-
-		} else if (input.equals("")) {
-			status = 3;
-			log("Empty input not valid.");
-
-		} else {
-			status = 4;
-		}
-
-		return status;
-	}
 
 	/**
 	 * Lists top movies.
@@ -112,12 +59,16 @@ public class DatabaseInit {
 	 * @param tmovies movies
 	 * @return String[] moviesList
 	 */
-	public static String[] topMovies(final TmdbMovies tmovies) {
+	public String[] topMovies(final TmdbMovies tmovies) {
+		currMovies.clear();
 		String[] moviesList = new String[20];
+		List<MovieDb> results = tmovies.getPopularMovies("en", 0).getResults();
 
 		try {
-			for (int i = 0; i < tmovies.getPopularMovies("en", 0).getResults().size(); i++) {
-				moviesList[i] = tmovies.getPopularMovies("en", 0).getResults().get(i).getTitle();
+			for (int i = 0; i < results.size(); i++) {
+				MovieDb m = results.get(i);
+				currMovies.add(m);
+				moviesList[i] = m.getTitle();
 			}
 		} catch (Exception e) {
 			String[] errorList = new String[] {
@@ -135,12 +86,17 @@ public class DatabaseInit {
 	 * @param tmovies movies
 	 * @return moviesList
 	 */
-	public static String[] nowMovies(final TmdbMovies tmovies) {
+	public String[] nowMovies(final TmdbMovies tmovies) {
+		currMovies.clear();
 		String[] moviesList = new String[20];
+		List<MovieDb> results = tmovies.getNowPlayingMovies("en", 0).getResults();
+		
 
 		try {
-			for (int i = 0; i < tmovies.getNowPlayingMovies("en", 0).getResults().size(); i++) {
-				moviesList[i] = tmovies.getNowPlayingMovies("en", 0).getResults().get(i).getTitle();
+			for (int i = 0; i < results.size(); i++) {
+				MovieDb m = results.get(i);
+				currMovies.add(m);
+				moviesList[i] = m.getTitle();
 			}
 		} catch (Exception e) {
 			String[] errorList = new String[] {
@@ -158,13 +114,18 @@ public class DatabaseInit {
 	 * @param tmovies movies
 	 * @return String[] moviesList
 	 */
-	public static String[] upcomingMovies(final TmdbMovies tmovies) {
+	public String[] upcomingMovies(final TmdbMovies tmovies) {
+		currMovies.clear();
 		String[] moviesList = new String[20];
+		List<MovieDb> results = tmovies.getUpcoming("en", 0).getResults();
 
 		try {
-			for (int i = 0; i < tmovies.getUpcoming("en", 0).getResults().size(); i++) {
-				moviesList[i] = tmovies.getUpcoming("en", 0).getResults().get(i).getTitle();
+			for (int i = 0; i < results.size(); i++) {
+				MovieDb m = results.get(i);
+				currMovies.add(m);
+				moviesList[i] = m.getTitle();
 			}
+			
 		} catch (Exception e) {
 			String[] errorList = new String[] {
 				"Now playing movies search did not work."
@@ -176,18 +137,15 @@ public class DatabaseInit {
 	}
 
 	/**
-	 * Search loop.
+	 * Searches movies.
 	 * 
 	 * @param input input
-	 * @param test test
-	 * @param testCommand command
 	 * @return status
 	 */
-	public String[] searchMovies(final String input, final boolean test, final String testCommand) {
+	public String[] searchMovies(final String input) {
+		currMovies.clear();
 		String[] moviesList;
-		
-		List<MovieDb> searchMovies = api.getSearch().searchMovie(input, 0, "en", false, 0).getResults();
-		
+		List<MovieDb> searchMovies = api.getSearch().searchMovie(input, 0, "en", false, 0).getResults(); 
 		int maxMovie = 20;
 		
 		try {
@@ -195,9 +153,13 @@ public class DatabaseInit {
 				maxMovie = searchMovies.size();
 			
 			moviesList = new String[maxMovie];
+			
 			for (int x = 0; x < maxMovie; x++) {
-				moviesList[x] = searchMovies.get(x).getTitle();
+				MovieDb m = searchMovies.get(x);
+				currMovies.add(m);
+				moviesList[x] = m.getTitle();
 			}
+			
 		} catch (Exception e) {
 			String[] errorList = new String[] {
 					"Movie search did not work."
@@ -233,7 +195,130 @@ public class DatabaseInit {
 
 		return moviesList;
 	}
+	
+	/**
+	 * Lists top shows.
+	 * 
+	 * @param shows shows
+	 * @return String[] showsList
+	 */
+	public String[] topShows(final TmdbTV shows) {
+		currShows.clear();
+		String[] showsList = new String[20];
+		List<TvSeries> results = shows.getPopular("en", 0).getResults();
 
+		try {
+			for (int i = 0; i < results.size(); i++) {
+				TvSeries s = results.get(i);
+				currShows.add(s);
+				showsList[i] = s.getName();
+			}
+		} catch (Exception e) {
+			String[] errorList = new String[] {
+				"Top movies search did not work."
+			};
+			return errorList;
+		}
+
+		return showsList;
+	}
+	
+	/**
+	 * Lists now shows.
+	 * 
+	 * @param shows shows
+	 * @return String[] showsList
+	 */
+	public String[] nowShows(final TmdbTV shows) {
+		currShows.clear();
+		String[] moviesList = new String[20];
+		List<TvSeries> results = shows.getOnTheAir("en", 0).getResults();
+
+		try {
+			for (int i = 0; i < results.size(); i++) {
+				TvSeries m = results.get(i);
+				currShows.add(m);
+				moviesList[i] = m.getName();
+			}
+		} catch (Exception e) {
+			String[] errorList = new String[] {
+				"Now playing movies search did not work."
+			};
+			return errorList;
+		}
+
+		return moviesList;
+	}
+
+	/**
+	 * Lists up and coming shows.
+	 * 
+	 * @param shows shows
+	 * @return String[] showsList
+	 */
+	public String[] upcomingShows(final TmdbTV shows) {
+		currShows.clear();
+		String[] showsList = new String[20];
+		List<TvSeries> results = shows.getAiringToday("en", 0, null).getResults();
+
+		try {
+			for (int i = 0; i < results.size(); i++) {
+				TvSeries m = results.get(i);
+				currShows.add(m);
+				showsList[i] = m.getName();
+			}
+			
+		} catch (Exception e) {
+			String[] errorList = new String[] {
+				"Now playing movies search did not work."
+			};
+			return errorList;
+		}
+
+		return showsList;
+	}
+	
+	/**
+	 * Searches shows.
+	 * 
+	 * @param input input
+	 * @return status
+	 */
+	public String[] searchShows(final String input) {
+		currShows.clear();
+		String[] showsList;
+		List<TvSeries> searchShows = api.getSearch().searchTv(input, "en", 0).getResults();
+		int maxShows = 20;
+		
+		try {
+			if (searchShows.size() < 20)
+				maxShows = searchShows.size();
+			
+			showsList = new String[maxShows];
+			
+			for (int x = 0; x < maxShows; x++) {
+				TvSeries m = searchShows.get(x);
+				currShows.add(m);
+				showsList[x] = m.getName();
+			}
+			
+		} catch (Exception e) {
+			String[] errorList = new String[] {
+					"TV Show search did not work."
+				};
+				return errorList;
+		} 
+
+		if (searchShows.size() == 0) {
+			String[] errorList = new String[] {
+					"TV Show search yielded no results."
+				};
+				return errorList;
+		} 
+	
+		return showsList;
+	}
+	
 	/**
 	 * Final Search Command.
 	 * 
